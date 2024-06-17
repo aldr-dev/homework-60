@@ -15,7 +15,7 @@ const MessageItem: React.FC<Props> = ({posts}) => {
       {posts.length > 0 ? (
         <Row className="chat-box mb-3">
           {posts.map((post) => (
-            <Card className="message bg-body-secondary">
+            <Card key={post._id} className="message bg-body-secondary">
               <span><b>Автор:</b> {post.author}</span>
                 <div className="message-and-time-inner">
                 <span><b>Сообщение:</b> {post.message}</span>
