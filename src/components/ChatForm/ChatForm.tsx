@@ -3,24 +3,31 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Row from 'react-bootstrap/Row';
 import Toast from 'react-bootstrap/Toast';
-import React, {ReactNode, useState} from 'react';
+import React, {useState} from 'react';
 import {FormProps} from '../../types';
 import {Col} from 'react-bootstrap';
 import './ChatForm.css';
 
 interface Props {
   url: string;
-  preloader: boolean;
-  error: boolean;
-  handlePreloader: (state: boolean) => void;
-  handleError: (state: boolean) => void;
 }
 
-const ChatForm: React.FC<Props> = ({url, preloader, error, handlePreloader, handleError}) => {
+const ChatForm: React.FC<Props> = ({url}) => {
   const [chatMessage, setChatMessage] = useState<FormProps>({
     name: '',
     message: '',
   });
+
+  const [preloader, setPreloader] = useState(false);
+  const [error, setError] = useState(false);
+
+  const handlePreloader = (state: boolean) => {
+    setPreloader(state);
+  };
+
+  const handleError = (state: boolean) => {
+    setError(state);
+  };
 
   const sendRequest =  async () => {
     const data = new URLSearchParams();
@@ -43,7 +50,7 @@ const ChatForm: React.FC<Props> = ({url, preloader, error, handlePreloader, hand
     }
   };
 
-  let preloaderStatus: ReactNode = null;
+  let preloaderStatus = null;
 
   if (preloader) {
     preloaderStatus = (
@@ -53,7 +60,7 @@ const ChatForm: React.FC<Props> = ({url, preloader, error, handlePreloader, hand
     );
   }
 
-  let errorStatus: ReactNode = null;
+  let errorStatus = null;
 
   if (error) {
     errorStatus = (
