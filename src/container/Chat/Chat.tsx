@@ -17,22 +17,14 @@ const Chat = () => {
   const url = 'http://146.185.154.90:8000/messages';
   const lastDate = `http://146.185.154.90:8000/messages?datetime=${date.length ? date : null}`;
 
-  const handlePreloader = (state: boolean) => {
-    setPreloader(state);
-  };
-
-  const handleError = (state: boolean) => {
-    setError(state);
-  };
-
   useEffect(() => {
     const dataFetch = async () => {
       try {
-        handlePreloader(true);
+        setPreloader(true);
         const response = await fetch(url);
-        handlePreloader(false);
+        setPreloader(false);
         if (!response.ok) {
-          handleError(true);
+          setError(true);
           throw new Error(`Ошибка: ${response.status} ${response.statusText}`);
         }
         const post: PostProps[] = await response.json();
@@ -43,8 +35,8 @@ const Chat = () => {
           setPosts(formatPost);
         }
       } catch (error) {
-        handleError(true);
-        handlePreloader(false);
+        setError(true);
+        setPreloader(false);
         console.error('К сожалению, не удалось получить список сообщений. Попробуйте позже. ' + error);
       }
     };
@@ -58,17 +50,17 @@ const Chat = () => {
       try {
         const response = await fetch(lastDate);
         if (!response.ok) {
-          handleError(true);
+          setError(true);
           throw new Error(`Ошибка: ${response.status} ${response.statusText}`);
         }
         const post: PostProps[] = await response.json();
         if (post.length > 0) {
           const latestDate = post[post.length - 1].datetime;
           setDate(latestDate);
-          setPosts([...posts, ...post].splice(-15));
+          setPosts([...posts, ...post]);
         }
       } catch (error) {
-        handleError(true);
+        setError(true);
         console.error('К сожалению, не удалось получить список сообщений. Попробуйте позже. ' + error);
       }
     }, 3000);
@@ -81,7 +73,7 @@ const Chat = () => {
 
   if (error) {
     errorStatus = (
-      <Toast className="bg-danger custom-position" onClose={() => handleError(false)}>
+      <Toast className="bg-danger custom-position" onClose={() => setError(false)}>
         <Toast.Header>
           <strong className="me-auto">Ошибка</strong>
         </Toast.Header>

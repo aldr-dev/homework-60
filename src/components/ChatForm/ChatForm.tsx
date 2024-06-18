@@ -21,31 +21,24 @@ const ChatForm: React.FC<Props> = ({url}) => {
   const [preloader, setPreloader] = useState(false);
   const [error, setError] = useState(false);
 
-  const handlePreloader = (state: boolean) => {
-    setPreloader(state);
-  };
-
-  const handleError = (state: boolean) => {
-    setError(state);
-  };
 
   const sendRequest =  async () => {
     const data = new URLSearchParams();
     data.set('message', chatMessage.message);
     data.set('author', chatMessage.name);
     try {
-      handlePreloader(true);
+      setPreloader(true);
       const response = await fetch(url, {method: 'post', body: data,});
-      handlePreloader(false);
+      setPreloader(false);
 
       if (!response.ok) {
-        handleError(true);
+        setError(true);
         throw new Error(`Ошибка: ${response.status} ${response.statusText}`);
       }
 
     } catch (error) {
-      handleError(true);
-      handlePreloader(false);
+      setError(true);
+      setPreloader(false);
       console.error('Произошла ошибка при отправке данных, попробуйте позже. ' + error);
     }
   };
@@ -64,7 +57,7 @@ const ChatForm: React.FC<Props> = ({url}) => {
 
   if (error) {
     errorStatus = (
-      <Toast className="bg-danger custom-position" onClose={() => handleError(false)}>
+      <Toast className="bg-danger custom-position" onClose={() => setError(false)}>
         <Toast.Header>
           <strong className="me-auto">Ошибка</strong>
         </Toast.Header>
